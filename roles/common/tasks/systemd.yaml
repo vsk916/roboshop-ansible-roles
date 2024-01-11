@@ -1,0 +1,14 @@
+  - name: "Need to copy {{component}} service file"
+    ansible.builtin.copy:
+      src: "{{component}}.service"
+      dest: "/etc/systemd/system/{{component}}.service"
+
+  - name: Need to do systemd reload
+    ansible.builtin.systemd_service: 
+      daemon_reload: true
+  
+  - name: start and enable the service
+    ansible.builtin.systemd_service:
+      name: "{{component}}""
+      state: present
+      enabled: yes

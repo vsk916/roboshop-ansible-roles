@@ -1,0 +1,21 @@
+
+  - name: calling app_setup from common folder - tasks - appsetup file to get all tasks which are in that file (app-setup)
+    ansible.builtin.import_role:
+      name: common
+      tasks_from: app_setup
+
+  - name: calling nodejs from common folder
+    ansible.builtin.import_role:
+      name: common
+      tasks_from: nodejs
+
+  - name: calling mongodb setup file form common roles
+    ansible.builtin.import_role:
+      name: common
+      tasks_from: mongodb-setup
+  
+  - name: calling systemd file form common
+    ansible.builtin.import_role:
+      name: common
+      tasks_from: systemd
+  

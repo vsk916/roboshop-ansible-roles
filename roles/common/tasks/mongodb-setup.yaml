@@ -1,0 +1,29 @@
+- name: copy mongodb repo
+  ansible.builtin.copy:
+    src: mongodb.repo
+    dest: /etc/yum.repos.d/mongodb.repo
+
+- name: Install mongodb client
+  ansible.builtin.package:
+    name: mongodb-org-shell
+    state: present
+
+- name: get the entries count
+  ansible.builtin.shell: mongo --host mongodb.devopsv.online --quiet --eval 'db = db.getSiblingDB("catalogue"); db.prodcounts.count()'
+  register: entries_count # output got from above command need to register in product_count variable
+  when: component == "catalogue"
+
+- name: get the entries count
+  ansible.builtin.shell: mongo --host mongodb.devopsv.online --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
+  register: entries_count 
+  when: component == "user"
+
+
+- name: print the product count of {{component}}
+  ansible.builtin.debug:
+    msg: "Entries_count: {{entries_count}}"
+
+- name: load {{component}} data when count equal to zero
+  ansible.builtin.shell: mongo --host mongodb.devopsv.online < /app/schema/{{component}}.js
+  when: entries_count.stdout == "0"
+  
